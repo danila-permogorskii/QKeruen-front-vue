@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -11,9 +12,10 @@ import (
 type JWTService interface {
 	GenerateToken(phoneNumber, role string) (string, error)
 	ValidateToken(token string) (*jwt.Token, error)
+	Definition(token string) (string, error)
 }
 
-type jwtCustomClaimAccess struct {
+type jwtCustomClaim struct {
 	PhoneNumber string `json:"phone_number"`
 	Role        string `json:"role"`
 	jwt.StandardClaims
@@ -41,7 +43,7 @@ func NewJWTService() JWTService {
 }
 
 func (j *jwtService) GenerateToken(phoneNumber, role string) (string, error) {
-	claims := &jwtCustomClaimAccess{
+	claims := &jwtCustomClaim{
 		phoneNumber,
 		role,
 		jwt.StandardClaims{
@@ -64,6 +66,29 @@ func (j *jwtService) ValidateToken(token string) (*jwt.Token, error) {
 		if _, ok := t_.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method %v", t_.Header["alg"])
 		}
+
 		return []byte(j.secretKey), nil
 	})
+}
+
+func (j *jwtService) Definition(token string) (string, error) {
+	t, err := j.ValidateToken(token)
+
+	if err != nil {
+		return "", err
+	}
+
+	if t.Valid {
+		claims := t.Claims.(jwt.MapClaims)
+		log.Println(claims["phone_number"])
+		log.Println(claims["role"])
+		if claims["role"] == "driver" {
+			return "driver", nil
+		}
+		if claims["role"] == "user" {
+			return "user", nil
+		}
+	}
+	return "wrong", nil
+
 }

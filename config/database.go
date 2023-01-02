@@ -7,11 +7,19 @@ import (
 	"fmt"
 	"log"
 
-	//"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
+	//"github.com/jackc/pgx/v5/pgxpool"
 )
 
-var tables = []string{}
+var tables = []string{
+	createDriverTable,
+	createUserTable,
+	createHistoryTable,
+	createOfferDriverTable,
+	createOfferUserTable,
+	createOrderProcessTable,
+	createTableSMS,
+}
 
 // DB config
 type DataBaseConfig struct {
@@ -43,7 +51,7 @@ func NewDataStore(pool *pgxpool.Pool) DataStore {
 func NewDBPool(dbConfig DataBaseConfig) (*pgxpool.Pool, func(), error) {
 	f := func() {}
 
-	pool, err := pgxpool.New(context.Background(), dbConfig.DSN())
+	pool, err := pgxpool.Connect(context.Background(), dbConfig.DSN())
 
 	if err != nil {
 		return nil, f, errors.New("database connection error")
@@ -60,12 +68,12 @@ func NewDBPool(dbConfig DataBaseConfig) (*pgxpool.Pool, func(), error) {
 
 func InitTabeles(pool *pgxpool.Pool) error {
 	for _, table := range tables {
-		res, err := pool.Exec(context.Background(), table)
+		_, err := pool.Exec(context.Background(), table)
 
 		if err != nil {
 			return err
 		}
-		fmt.Println("Created table: ", res)
+		fmt.Println("Created table: ")
 	}
 	return nil
 }
