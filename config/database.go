@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	//"github.com/jackc/pgx/v5/pgxpool"
@@ -17,6 +18,7 @@ var tables = []string{
 	createHistoryTable,
 	createOfferDriverTable,
 	createOfferUserTable,
+	createOrderTable,
 	createOrderProcessTable,
 	createTableSMS,
 }
@@ -50,8 +52,10 @@ func NewDataStore(pool *pgxpool.Pool) DataStore {
 
 func NewDBPool(dbConfig DataBaseConfig) (*pgxpool.Pool, func(), error) {
 	f := func() {}
+	ctx, cancell := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancell()
 
-	pool, err := pgxpool.Connect(context.Background(), dbConfig.DSN())
+	pool, err := pgxpool.Connect(ctx, dbConfig.DSN())
 
 	if err != nil {
 		return nil, f, errors.New("database connection error")

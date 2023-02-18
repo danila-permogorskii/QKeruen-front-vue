@@ -23,7 +23,7 @@ func (pool OfferUserDB) Create(id int, offer dto.OfferRequest) error {
 		    customer
 	)VALUES($1,$2,$3,$4,$5);`
 
-	_, err := pool.DB.Query(context.Background(), q, offer.Comment, offer.From, offer.To, offer.Type, id)
+	_, err := pool.DB.Exec(context.Background(), q, offer.Comment, offer.From, offer.To, offer.Type, id)
 
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func (pool OfferUserDB) Search(to, from string) ([]*models.OfferUserModel, error
 func (pool OfferUserDB) Delete(offerId int) error {
 	q := `Delete From offer_user WHERE Id = $1`
 
-	_, err := pool.DB.Query(context.Background(), q, offerId)
+	_, err := pool.DB.Exec(context.Background(), q, offerId)
 
 	if err != nil {
 		return err

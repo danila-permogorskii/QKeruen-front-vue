@@ -76,7 +76,7 @@ func main() {
 		driverRouter.POST("/", driverController.Register)
 		driverRouter.GET("/", driverController.GetProfile)
 		driverRouter.PUT("/", driverController.Update)
-		driverRouter.DELETE("/;id", driverController.Delete)
+		driverRouter.DELETE("/:id", driverController.Delete)
 	}
 
 	userRouter := r.Group("/user", middleware.AuthorizeJWTUser(jwtService))
@@ -111,7 +111,7 @@ func main() {
 		offer_user.DELETE("/:id", offerUserController.DeleteOffer)
 	}
 
-	orderDriverRouter := r.Group("/order/user", middleware.AuthorizeJWTDriver(jwtService))
+	orderDriverRouter := r.Group("/order/user", middleware.AuthorizeJWTDriver(jwtService))         
 	{
 		orderDriverRouter.GET("/for-driver/:id", orderController.GetOrders)
 		//orderDriverRouter.GET("/")
@@ -125,13 +125,16 @@ func main() {
 		orderUserRouter.DELETE("/:id", orderController.DeleteOrder)
 	}
 
-	processRouter := r.Group("/process")
-	{
-		processRouter.POST("/start")
-		processRouter.POST("/cancel")
-		processRouter.POST("/finish")
-		processRouter.POST("/user")
-	}
+	/*
+		processRouter := r.Group("/process")
+		{
+			processRouter.POST("/start")
+			processRouter.POST("/cancel")
+			processRouter.POST("/finish")
+			processRouter.POST("/user")
+		}
+
+	*/
 
 	r.Run(":8080")
 }

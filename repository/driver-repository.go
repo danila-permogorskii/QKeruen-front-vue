@@ -28,7 +28,7 @@ func (pool DriverDB) InsertDriverData(data models.DriverRegister) error {
 		  docsback,
 		  carType,
 		  token)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`
-	_, err := pool.DB.Query(
+	_, err := pool.DB.Exec(
 		context.Background(),
 		q,
 		data.Phone,
@@ -51,6 +51,7 @@ func (pool DriverDB) InsertDriverData(data models.DriverRegister) error {
 }
 
 func (pool DriverDB) GetDriverProfile(token string) (*models.DriverModel, error) {
+
 	q := `Select * From driver Where token=$1`
 	rows := pool.DB.QueryRow(context.Background(), q, token)
 
@@ -186,7 +187,7 @@ func (pool DriverDB) UpdateDriver(model models.DriverModel) (*models.DriverModel
 
 func (pool DriverDB) Delete(id int) error {
 	q := `Delete From driver WHERE id=$1`
-	_, err := pool.DB.Query(context.Background(), q, id)
+	_, err := pool.DB.Exec(context.Background(), q, id)
 	if err != nil {
 		return err
 	}

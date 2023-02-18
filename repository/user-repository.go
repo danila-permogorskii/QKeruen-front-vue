@@ -25,7 +25,7 @@ func (pool UserDB) Insert(data models.UserRegister) error {
 		token
 	)VALUES($1,$2,$3,$4,$5)`
 
-	_, err := pool.DB.Query(context.Background(), q, data.Phone, data.FirstName, data.LastName, data.Avatar, data.Token)
+	_, err := pool.DB.Exec(context.Background(), q, data.Phone, data.FirstName, data.LastName, data.Avatar, data.Token)
 
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func (pool UserDB) Update(update models.UserModel) (*models.UserModel, error) {
 func (pool UserDB) Delete(id int) error {
 	q := `Delete From customer WHERE id=$1;`
 
-	_, err := pool.DB.Query(context.Background(), q, id)
+	_, err := pool.DB.Exec(context.Background(), q, id)
 
 	if err != nil {
 		return err

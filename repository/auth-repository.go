@@ -42,6 +42,7 @@ func NewDatabase(db PgxIface) Database {
 func (pool Database) CheckFromRepo(contact, role string) (bool, error) {
 	switch role {
 	case "driver":
+
 		q := `Select phone From driver WHERE phone=$1;`
 		row := pool.DB.QueryRow(context.Background(), q, contact)
 
@@ -64,6 +65,7 @@ func (pool Database) CheckFromRepo(contact, role string) (bool, error) {
 		return true, nil
 
 	case "user":
+
 		q := `Select phone From customer WHERE phone=$1;`
 		row := pool.DB.QueryRow(context.Background(), q, contact)
 
@@ -94,8 +96,8 @@ func (pool Database) CheckFromRepo(contact, role string) (bool, error) {
 func (pool Database) GiveToken(contact, role string) (string, error) {
 	switch role {
 	case "driver":
-		q := `Select token From driver Where phone=$1;`
 
+		q := `Select token From driver Where phone=$1;`
 		row := pool.DB.QueryRow(context.Background(), q, contact)
 
 		var token string
@@ -108,6 +110,7 @@ func (pool Database) GiveToken(contact, role string) (string, error) {
 
 		return token, nil
 	case "user":
+
 		q := `Select token From users Where contact=$1;`
 
 		row := pool.DB.QueryRow(context.Background(), q, contact)
@@ -135,7 +138,7 @@ func (pool Database) Insert(contact string, code int) error {
 	// sql for inserting new record
 	q := `INSERT INTO sms_cache(contact, code) VALUES($1,$2);`
 
-	_, err := pool.DB.Query(context.Background(), q, contact, code)
+	_, err := pool.DB.Exec(context.Background(), q, contact, code)
 
 	if err != nil {
 		return err
@@ -199,7 +202,6 @@ func (pool Database) All() ([]*models.SMS, error) {
 }
 
 func (pool Database) CheckTokenDriver(token string) (*models.DriverModel, error) {
-
 	q := `Select * From driver Where token=$1`
 	rows := pool.DB.QueryRow(context.Background(), q, token)
 

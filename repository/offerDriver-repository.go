@@ -25,7 +25,7 @@ func (pool OfferDriverDB) Create(id int, offer dto.OfferRequest) error {
 		driver
 	)VALUES($1,$2,$3,$4,$5);`
 
-	_, err := pool.DB.Query(context.Background(), q, offer.Comment, offer.From, offer.To, offer.Type, id)
+	_, err := pool.DB.Exec(context.Background(), q, offer.Comment, offer.From, offer.To, offer.Type, id)
 
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func (pool OfferDriverDB) Search(to, from string) ([]*models.OfferDriverModel, e
 func (pool OfferDriverDB) Delete(offerId int) error {
 	q := `Delete From offer_driver WHERE Id = $1`
 
-	_, err := pool.DB.Query(context.Background(), q, offerId)
+	_, err := pool.DB.Exec(context.Background(), q, offerId)
 
 	if err != nil {
 		return err

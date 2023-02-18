@@ -50,7 +50,7 @@ func (c *authController) Register(ctx *gin.Context) {
 		responseDTO.Token = token_
 		responseDTO.IsAuthorized = true
 		ctx.JSON(http.StatusAccepted, responseDTO)
-
+		return
 	}
 
 	code := help.GenerateRandomID(4)
@@ -131,7 +131,7 @@ func (c *authController) ResendCode(ctx *gin.Context) {
 		responseDTO.Token = token_
 		responseDTO.IsAuthorized = true
 		ctx.JSON(http.StatusAccepted, responseDTO)
-
+		return
 	}
 
 	code := help.GenerateRandomID(4)

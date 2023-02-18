@@ -47,7 +47,7 @@ var (
 		type VARCHAR(100),
 		customer INTEGER
 	);`
-	createOrderProcessTable = `CREATE TABLE IF NOT EXISTS order_process(
+	createOrderTable = `CREATE TABLE IF NOT EXISTS order(
 		id SERIAL PRIMARY KEY,
 		userId INTEGER,
 		latitudeFrom varchar(100),
@@ -59,6 +59,14 @@ var (
 		type varchar(100),
 		orderStatus INTEGER
 	);`
+	createOrderProcessTable = `CREATE TABLE IF NOT EXISTS order_process(
+		id SERIAL PRIMARY KEY,
+		orderId INTEGER,
+		driverId INTEGER,
+		userid INTEGER,
+		startDate varchar(100),
+		finishedDate varchar(100)
+	)`
 	createTableSMS = `CREATE TABLE IF NOT EXISTS sms_cache(
 		id SERIAL PRIMARY KEY,
 		contact varchar(50),

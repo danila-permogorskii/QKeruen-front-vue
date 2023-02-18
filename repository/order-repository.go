@@ -14,7 +14,7 @@ func NewOrderRepository(ds PgxIface) OrderDB {
 }
 
 func (pool OrderDB) CreateOrder(userId int, order dto.OrderRequest) error {
-	q := `INSERT INTO order_process(
+	q := `INSERT INTO order(
 		userId,
 		latitudeFrom,
 		longitudeFrom,
@@ -26,7 +26,7 @@ func (pool OrderDB) CreateOrder(userId int, order dto.OrderRequest) error {
 		orderStatus
 	)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);`
 
-	_, err := pool.DB.Query(
+	_, err := pool.DB.Exec(
 		context.Background(),
 		q,
 		order.UserId,
@@ -64,7 +64,7 @@ func (pool OrderDB) GetDriverType(driverId int) (string, error) {
 }
 
 func (pool OrderDB) GetOrders(driverId int) ([]*dto.OrderResponse, error) {
-	q := `Select * From order_process WHERE orderStatus=$1`
+	q := `Select * From order WHERE orderStatus=$1`
 
 	rows, err := pool.DB.Query(context.Background(), q, 0)
 
@@ -111,7 +111,7 @@ func (pool OrderDB) GetOrders(driverId int) ([]*dto.OrderResponse, error) {
 }
 
 func (pool OrderDB) GetMyOrders(id int) ([]*dto.OrderResponse, error) {
-	q := `Select * From order_process WHERE userId=$1`
+	q := `Select * From order WHERE userId=$1`
 
 	rows, err := pool.DB.Query(context.Background(), q, id)
 
@@ -149,9 +149,9 @@ func (pool OrderDB) GetMyOrders(id int) ([]*dto.OrderResponse, error) {
 }
 
 func (pool OrderDB) DeleteOrder(orderId int) error {
-	q := `Delete From order_process WHERE Id=$1`
+	q := `Delete From order WHERE Id=$1`
 
-	_, err := pool.DB.Query(context.Background(), q, orderId)
+	_, err := pool.DB.Exec(context.Background(), q, orderId)
 
 	if err != nil {
 		return err
