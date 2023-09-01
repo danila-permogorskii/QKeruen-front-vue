@@ -1,0 +1,16 @@
+import mutations from './mutations';
+// import getters from './getters';
+// import actions from './actions';
+
+export default {
+  namespaced: true,
+  state: {
+    phoneNumber: '', //77471850499
+    role: '',
+    code: '',
+    authorize: false,
+  },
+  // actions,
+  // getters,
+  mutations,
+};
